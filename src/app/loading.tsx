@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center px-4 py-20">
+    <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="flex w-full max-w-sm flex-col items-center text-center">
         <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm">
           <BookOpen className="size-7" />
