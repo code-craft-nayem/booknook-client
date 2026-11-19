@@ -19,6 +19,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const getSafeCallbackUrl = (value: string | null) => {
+  if (!value || !value.startsWith("/")) {
+    return "/";
+  }
+
+  if (value.startsWith("//") || value.startsWith("/\\")) {
+    return "/";
+  }
+
+  const hasControlCharacter = Array.from(value).some((character) => {
+    const code = character.charCodeAt(0);
+    return code < 0x20 || code === 0x7f;
+  });
+
+  if (hasControlCharacter) {
+    return "/";
+  }
+
+  const pathname = value.split(/[?#]/)[0];
+
+  if (pathname === "/login" || pathname === "/register") {
+    return "/";
+  }
+
+  return value;
+};
+
 const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,14 +57,7 @@ const LoginForm = () => {
   }>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const callbackUrl = searchParams.get("callbackUrl");
-  const destination =
-    callbackUrl &&
-    callbackUrl.startsWith("/") &&
-    !callbackUrl.startsWith("//") &&
-    !callbackUrl.startsWith("/\\")
-      ? callbackUrl
-      : "/";
+  const destination = getSafeCallbackUrl(searchParams.get("callbackUrl"));
 
   const registerHref =
     destination === "/"
