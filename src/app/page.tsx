@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import {
@@ -52,6 +53,12 @@ const steps = [
     icon: RotateCcw,
   },
 ];
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Discover new books, build your personal shelf, and keep track of every borrow at BookNook.",
+};
 
 export default function Home() {
   return (

@@ -1,4 +1,4 @@
-import { BookOpen, LoaderCircle } from "lucide-react";
+import { BookOpen, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
@@ -18,8 +18,8 @@ export default function Loading() {
           <Skeleton className="mx-auto h-3 w-3/4" />
           <Skeleton className="mx-auto h-3 w-1/2" />
         </div>
-        <LoaderCircle
-          className="mt-8 size-5 animate-spin text-primary"
+        <Loader2
+          className="mt-8 size-6 animate-spin text-primary"
           aria-hidden="true"
         />
         <span className="sr-only">Loading</span>

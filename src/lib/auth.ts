@@ -9,7 +9,6 @@ const db = client.db("booknook");
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
-
 const socialProviders =
   googleClientId && googleClientSecret
     ? {
@@ -29,6 +28,15 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
+  },
+  account: {
+    accountLinking: {
+      enabled: true,
+      // Google verifies its own emails, so an existing email/password account
+      // with the same address can be linked even though it is unverified.
+      trustedProviders: ["google"],
+      requireLocalEmailVerified: false,
+    },
   },
   socialProviders,
   plugins: [jwt()],

@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import {
-  ArrowRight,
-  BookMarked,
-  BookOpen,
-  Library,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { A11y, Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -20,33 +15,27 @@ import { cn } from "@/lib/utils";
 const slides = [
   {
     eyebrow: "Find your next chapter",
-    title: "Discover Your Next Read",
+    title: "Your Neighbourhood Library, Online",
     description:
-      "Browse a growing shelf of fiction, science, history, and books for young readers. Your next favorite story is only a page away.",
-    href: "/books",
-    cta: "Explore Books",
-    icon: Library,
-    gradient: "from-primary/20 via-background to-accent",
+      "Discover books across fiction, science, history, and kids' shelves, and borrow what you love.",
+    image:
+      "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1600&q=80",
   },
   {
-    eyebrow: "Build the shared shelf",
-    title: "Share a Book With the Shelf",
+    eyebrow: "Grow the community shelf",
+    title: "Add, Borrow & Return With Ease",
     description:
-      "Add a book from your own collection and open it up to the BookNook community.",
-    href: "/add-book",
-    cta: "Add a Book",
-    icon: BookMarked,
-    gradient: "from-secondary via-background to-primary/10",
+      "Share books from your collection, track available copies in real time, and manage every borrow smoothly.",
+    image:
+      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1600&q=80",
   },
   {
-    eyebrow: "Stay on top of every loan",
-    title: "Track Every Borrow",
+    eyebrow: "Curated reading spaces",
+    title: "Curated Books for Every Reader",
     description:
-      "Keep every loan in view, from the day you borrow to the day you return it.",
-    href: "/my-borrows",
-    cta: "View My Borrows",
-    icon: BookOpen,
-    gradient: "from-accent via-background to-secondary",
+      "Explore fresh arrivals and timeless reads in one clean place built for everyday readers.",
+    image:
+      "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1600&q=80",
   },
 ];
 
@@ -71,68 +60,49 @@ const HeroSlider = () => {
               "--swiper-theme-color": "var(--primary)",
               "--swiper-navigation-size": "36px",
               "--swiper-pagination-bottom": "16px",
-              "--swiper-pagination-bullet-inactive-color":
-                "var(--muted-foreground)",
-              "--swiper-pagination-bullet-inactive-opacity": "0.4",
+              "--swiper-pagination-bullet-inactive-color": "#ffffff",
+              "--swiper-pagination-bullet-inactive-opacity": "0.5",
             } as CSSProperties
           }
         >
-          {slides.map((slide) => {
-            const Icon = slide.icon;
-
-            return (
-              <SwiperSlide key={slide.title}>
+          {slides.map((slide) => (
+            <SwiperSlide key={slide.title}>
+              <div
+                style={{ backgroundImage: `url(${slide.image})` }}
+                className="relative flex min-h-[420px] items-center overflow-hidden bg-cover bg-center px-6 py-16 pb-20 sm:min-h-[480px] sm:px-10 lg:min-h-[520px] lg:px-16"
+              >
                 <div
-                  className={cn(
-                    "relative flex min-h-[420px] items-center overflow-hidden bg-gradient-to-br px-6 py-16 pb-20 sm:min-h-[480px] sm:px-10 lg:min-h-[520px] lg:px-16",
-                    slide.gradient
-                  )}
-                >
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-primary/10 blur-3xl"
-                  />
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/35"
+                />
 
-                  <div className="relative z-10 grid w-full items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-                    <div className="max-w-2xl">
-                      <Badge
-                        variant="secondary"
-                        className="bg-background/70 text-primary backdrop-blur"
-                      >
-                        {slide.eyebrow}
-                      </Badge>
-                      <h2 className="font-heading mt-5 text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                        {slide.title}
-                      </h2>
-                      <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-                        {slide.description}
-                      </p>
-                      <Link
-                        href={slide.href}
-                        className={cn(
-                          buttonVariants({ size: "lg" }),
-                          "mt-8 h-11 px-5"
-                        )}
-                      >
-                        {slide.cta}
-                        <ArrowRight className="size-4" />
-                      </Link>
-                    </div>
-
-                    <div className="relative hidden items-center justify-center lg:flex">
-                      <div
-                        aria-hidden="true"
-                        className="absolute size-64 rounded-full bg-primary/10 blur-2xl"
-                      />
-                      <div className="relative flex size-56 items-center justify-center rounded-[2rem] border border-primary/15 bg-background/70 shadow-2xl shadow-primary/10 backdrop-blur">
-                        <Icon className="size-24 text-primary" />
-                      </div>
-                    </div>
-                  </div>
+                <div className="relative z-10 max-w-2xl text-white">
+                  <Badge
+                    variant="secondary"
+                    className="bg-white/15 text-white backdrop-blur border-white/20"
+                  >
+                    {slide.eyebrow}
+                  </Badge>
+                  <h2 className="font-heading mt-5 text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+                    {slide.title}
+                  </h2>
+                  <p className="mt-5 max-w-xl text-base leading-7 text-white/85 sm:text-lg">
+                    {slide.description}
+                  </p>
+                  <Link
+                    href="/books"
+                    className={cn(
+                      buttonVariants({ size: "lg" }),
+                      "mt-8 h-11 px-5"
+                    )}
+                  >
+                    Browse Books
+                    <ArrowRight className="size-4" />
+                  </Link>
                 </div>
-              </SwiperSlide>
-            );
-          })}
+              </div>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </section>

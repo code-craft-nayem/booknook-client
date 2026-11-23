@@ -13,9 +13,17 @@ const GoogleButton = ({ callbackUrl }: { callbackUrl: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (searchParams.get("error")) {
-      toast.error("Google sign-in failed. Please try again.");
+    const error = searchParams.get("error");
+
+    if (!error) {
+      return;
     }
+
+    toast.error(
+      error === "access_denied"
+        ? "Google blocked this sign-in. Add your Google account as a test user in Google Cloud Console and try again."
+        : `Google sign-in failed (${error}). Please try again.`
+    );
   }, [searchParams]);
 
   const handleGoogleSignIn = async () => {

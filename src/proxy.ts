@@ -14,5 +14,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/add-book", "/my-books", "/my-borrows", "/books/:id"],
+  matcher: ["/add-book", "/my-books", "/my-borrows", "/books/:id", "/profile"],
 };
