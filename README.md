@@ -6,9 +6,7 @@ A modern, full-stack online library management application where readers can dis
 
 ## 🔗 Project Links
 
-- **Live Site URL:** [https://booknook-client.vercel.app](https://booknook-client.vercel.app) *(or your deployed production URL)*
-- **Client Repository:** [https://github.com/nayemhasan892008/BookNook](https://github.com/nayemhasan892008/BookNook)
-- **Backend API Repository:** [https://github.com/nayemhasan892008/BookNook/tree/main/booknook-server](https://github.com/nayemhasan892008/BookNook/tree/main/booknook-server)
+- **Live Site URL:** [https://booknook-frontend-bay.vercel.app/]
 
 ---
 
@@ -21,7 +19,7 @@ A modern, full-stack online library management application where readers can dis
 
 2. **Browse, Search & Category Filter:**
    - Explore library shelves with real-time text search across titles and authors.
-   - Filter books by standard categories (*Fiction*, *Science*, *History*, *Kids*, *Others*).
+   - Filter books by standard categories (_Fiction_, _Science_, _History_, _Kids_, _Others_).
    - Responsive book cards with cover image previews, author details, and availability badges.
 
 3. **Add Books with Live Cover Preview:**
@@ -54,38 +52,3 @@ A modern, full-stack online library management application where readers can dis
 - **Backend:** Node.js, Express, MongoDB Native Driver, JOSE (JWKS verification)
 
 ---
-
-## 🚀 Getting Started
-
-### 1. Prerequisites
-- Node.js (v18.17+ or v20+)
-- MongoDB Atlas cluster or local MongoDB instance
-
-### 2. Environment Variables
-Create a `.env` file in the root directory:
-
-```env
-BETTER_AUTH_SECRET=your_better_auth_secret
-BETTER_AUTH_URL=http://localhost:3000
-NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
-MONGO_DB_URL=your_mongodb_connection_string
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-### 3. Installation & Run
-```bash
-# Install dependencies
-npm install
-
-# Run the development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser.
-
----
-
-## 📄 License
-This project is open-source under the MIT License.
