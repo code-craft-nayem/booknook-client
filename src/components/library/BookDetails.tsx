@@ -11,7 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import BookDetailsView, {
   type BookDetail,
-} from "@/components/books/BookDetailsView";
+} from "@/components/library/BookDetailsView";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

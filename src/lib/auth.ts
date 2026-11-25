@@ -32,8 +32,7 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true,
-      // Google verifies its own emails, so an existing email/password account
-      // with the same address can be linked even though it is unverified.
+
       trustedProviders: ["google"],
       requireLocalEmailVerified: false,
     },

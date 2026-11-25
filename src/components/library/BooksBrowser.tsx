@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, Search } from "lucide-react";
-import BookCard, { type Book } from "@/components/books/BookCard";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { type Book } from "@/components/library/BookCard";
+import BooksBrowserView from "@/components/library/BooksBrowserView";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -9,9 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -134,132 +133,13 @@ const BooksBrowser = async ({
   const sortedBooks = [...books].sort(
     (a, b) => getCreatedAtTime(b) - getCreatedAtTime(a)
   );
-  const normalizedQuery = q.toLowerCase();
-
-  const matchingBooks = sortedBooks.filter((book) => {
-    if (category && book.category !== category) {
-      return false;
-    }
-
-    if (!normalizedQuery) {
-      return true;
-    }
-
-    return (
-      (book.title ?? "").toLowerCase().includes(normalizedQuery) ||
-      (book.author ?? "").toLowerCase().includes(normalizedQuery)
-    );
-  });
-
-  const buildCategoryHref = (nextCategory: string) => {
-    const query = new URLSearchParams();
-
-    if (q) {
-      query.set("q", q);
-    }
-
-    if (nextCategory) {
-      query.set("category", nextCategory);
-    }
-
-    const search = query.toString();
-    return search ? `/books?${search}` : "/books";
-  };
 
   return (
-    <div className="mt-8">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <form
-          action="/books"
-          method="get"
-          role="search"
-          className="flex w-full max-w-md items-center gap-2"
-        >
-          {category ? (
-            <input type="hidden" name="category" value={category} />
-          ) : null}
-          <Input
-            type="search"
-            name="q"
-            defaultValue={q}
-            placeholder="Search by title or author"
-            aria-label="Search books by title or author"
-            className="h-10 bg-background"
-          />
-          <button
-            type="submit"
-            className={cn(buttonVariants({ size: "lg" }), "h-10 px-4")}
-          >
-            <Search className="size-4" />
-            <span className="hidden sm:inline">Search</span>
-          </button>
-        </form>
-
-        <nav
-          aria-label="Filter books by category"
-          className="flex flex-wrap gap-2"
-        >
-          <Link
-            href={buildCategoryHref("")}
-            aria-current={category ? undefined : "page"}
-            className={buttonVariants({
-              variant: category ? "outline" : "default",
-              size: "lg",
-            })}
-          >
-            All
-          </Link>
-          {categories.map((name) => (
-            <Link
-              key={name}
-              href={buildCategoryHref(name)}
-              aria-current={category === name ? "page" : undefined}
-              className={buttonVariants({
-                variant: category === name ? "default" : "outline",
-                size: "lg",
-              })}
-            >
-              {name}
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      <p className="mt-6 text-sm text-muted-foreground">
-        Showing{" "}
-        <span className="font-medium text-foreground">
-          {matchingBooks.length}
-        </span>{" "}
-        of{" "}
-        <span className="font-medium text-foreground">{sortedBooks.length}</span>{" "}
-        books
-      </p>
-
-      {matchingBooks.length === 0 ? (
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle>No books match your search.</CardTitle>
-            <CardDescription>
-              Try a different title, author, or category.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link
-              href="/books"
-              className={buttonVariants({ variant: "outline", size: "sm" })}
-            >
-              Clear filters
-            </Link>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {matchingBooks.map((book) => (
-            <BookCard key={book._id} book={book} />
-          ))}
-        </div>
-      )}
-    </div>
+    <BooksBrowserView
+      books={sortedBooks}
+      initialQuery={q}
+      initialCategory={category}
+    />
   );
 };
 

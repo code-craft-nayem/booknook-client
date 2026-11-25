@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import BooksBrowser, {
   BooksBrowserSkeleton,
-} from "@/components/books/BooksBrowser";
+} from "@/components/library/BooksBrowser";
 
 export const metadata: Metadata = {
   title: "All Books",

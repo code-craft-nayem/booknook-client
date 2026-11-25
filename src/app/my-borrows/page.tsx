@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import MyBorrowsManager, {
   MyBorrowsManagerSkeleton,
-} from "@/components/books/MyBorrowsManager";
+} from "@/components/library/MyBorrowsManager";
 
 export const metadata: Metadata = {
   title: "My Borrows",

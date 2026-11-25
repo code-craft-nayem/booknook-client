@@ -61,7 +61,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 const BOOK_CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"];
 

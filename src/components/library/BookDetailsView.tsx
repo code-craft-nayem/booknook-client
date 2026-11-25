@@ -97,7 +97,7 @@ export const BookDetailsView = ({ book }: { book: BookDetail }) => {
     currentUser.email.toLowerCase() === book.userEmail.toLowerCase()
   );
 
-  // Check if current user has already borrowed this book
+
   useEffect(() => {
     let isCancelled = false;
 
@@ -127,7 +127,7 @@ export const BookDetailsView = ({ book }: { book: BookDetail }) => {
           setIsAlreadyBorrowed(hasBorrowedThis);
         }
       } catch {
-        // Silently catch; backend will enforce 409 if borrow attempted
+
       }
     };
 
@@ -352,7 +352,6 @@ export const BookDetailsView = ({ book }: { book: BookDetail }) => {
         </Card>
       </div>
 
-      {/* Borrow Modal */}
       <Dialog
         open={isBorrowDialogOpen}
         onOpenChange={(open) => {

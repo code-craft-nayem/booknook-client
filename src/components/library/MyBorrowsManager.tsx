@@ -183,7 +183,7 @@ const MyBorrowsManager = () => {
         if (isCancelled) return;
 
         if (Array.isArray(data)) {
-          // Sort with nearest return date first
+
           const sorted = [...(data as BorrowRecord[])].reverse();
           setBorrows(sorted);
         }
@@ -333,7 +333,7 @@ const MyBorrowsManager = () => {
         </Link>
       </div>
 
-      {/* Desktop Table View */}
+
       <div className="mt-6 hidden md:block overflow-hidden rounded-xl border border-border bg-card">
         <Table>
           <TableHeader>
@@ -422,7 +422,7 @@ const MyBorrowsManager = () => {
         </Table>
       </div>
 
-      {/* Mobile Equal-Height Cards View */}
+
       <div className="mt-6 grid gap-4 sm:grid-cols-2 md:hidden">
         {borrows.map((borrow) => {
           const overdue = isOverdue(borrow.returnDate);
@@ -499,7 +499,7 @@ const MyBorrowsManager = () => {
         })}
       </div>
 
-      {/* Return Book Confirmation Modal */}
+
       <AlertDialog
         open={Boolean(borrowToReturn)}
         onOpenChange={(open) => {

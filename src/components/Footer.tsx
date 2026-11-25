@@ -113,7 +113,7 @@ const Footer = () => {
               <li className="flex items-center gap-2.5">
                 <Mail className="size-4 shrink-0 text-primary" />
                 <Link
-                  href="mailto:nayemhasan892008@gmail.com"
+                  href="#"
                   className="transition-colors hover:text-primary"
                 >
                   support@booknook.dev
@@ -122,10 +122,10 @@ const Footer = () => {
               <li className="flex items-center gap-2.5">
                 <Phone className="size-4 shrink-0 text-primary" />
                 <a
-                  href="tel:+01894525994"
+                  href="#"
                   className="transition-colors hover:text-primary"
                 >
-                  01894525994
+                  +880 01894525994
                 </a>
               </li>
             </ul>

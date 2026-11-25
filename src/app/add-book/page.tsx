@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import AddBookForm, {
   AddBookFormSkeleton,
-} from "@/components/books/AddBookForm";
+} from "@/components/library/AddBookForm";
 
 export const metadata: Metadata = {
   title: "Add Book",

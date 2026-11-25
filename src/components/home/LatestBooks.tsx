@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import BookCard, { type Book } from "@/components/books/BookCard";
+import BookCard, { type Book } from "@/components/library/BookCard";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,

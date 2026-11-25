@@ -11,7 +11,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <section className="relative mx-auto flex w-full max-w-7xl flex-1 items-center justify-center overflow-hidden px-4 py-14 sm:px-6 sm:py-20 lg:py-28">
-      {/* Subtle ambient background glows */}
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-24 left-1/2 size-[28rem] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"

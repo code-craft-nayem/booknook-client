@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import BookDetails, {
   BookDetailsSkeleton,
-} from "@/components/books/BookDetails";
+} from "@/components/library/BookDetails";
 import { buttonVariants } from "@/components/ui/button";
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "View a book on the BookNook shelves.",
 };
 
-// The book id is only known at request time, so this route renders on demand.
+
 export const instant = false;
 
 export default function BookDetailsPage(props: PageProps<"/books/[id]">) {
