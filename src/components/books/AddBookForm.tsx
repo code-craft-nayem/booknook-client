@@ -31,25 +31,52 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const BOOK_CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"];
 
-type FieldErrors = {
-  title?: string;
-  author?: string;
-  category?: string;
-  image?: string;
-  totalCopies?: string;
-  description?: string;
+const INITIAL_VALUES = {
+  title: "",
+  author: "",
+  category: "",
+  image: "",
+  totalCopies: "",
+  description: "",
 };
 
-const getPreviewSrc = (value: string) => {
-  try {
-    const url = new URL(value.trim());
+type FormValues = typeof INITIAL_VALUES;
+type FieldErrors = Partial<Record<keyof FormValues, string>>;
 
-    return url.protocol === "http:" || url.protocol === "https:"
-      ? value.trim()
-      : "";
+const getPreviewSrc = (value: string) => {
+  const trimmed = value.trim();
+  try {
+    const url = new URL(trimmed);
+    return url.protocol === "http:" || url.protocol === "https:" ? trimmed : "";
   } catch {
     return "";
   }
+};
+
+const FieldMessage = ({
+  id,
+  error,
+  hint,
+}: {
+  id: string;
+  error?: string;
+  hint?: string;
+}) => {
+  if (error) {
+    return (
+      <p id={`${id}-error`} role="alert" className="text-xs text-destructive">
+        {error}
+      </p>
+    );
+  }
+  if (hint) {
+    return (
+      <p id={`${id}-hint`} className="text-xs text-muted-foreground">
+        {hint}
+      </p>
+    );
+  }
+  return null;
 };
 
 export const AddBookFormSkeleton = () => {
@@ -102,76 +129,62 @@ export const AddBookFormSkeleton = () => {
 
 const AddBookForm = () => {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [category, setCategory] = useState("");
-  const [image, setImage] = useState("");
-  const [totalCopies, setTotalCopies] = useState("");
-  const [description, setDescription] = useState("");
+  const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const previewSrc = getPreviewSrc(image);
+  const previewSrc = getPreviewSrc(values.image);
 
-  const clearError = (field: keyof FieldErrors) =>
+  const updateField = (field: keyof FormValues, value: string) => {
+    setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
+  };
+
+  const redirectToLogin = () => {
+    toast.error("Your session expired. Please log in again.");
+    router.push(`/login?callbackUrl=${encodeURIComponent("/add-book")}`);
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isSubmitting) return;
 
-    if (isSubmitting) {
-      return;
-    }
-
+    const trimmed = {
+      title: values.title.trim(),
+      author: values.author.trim(),
+      image: values.image.trim(),
+      description: values.description.trim(),
+    };
+    const copies = Number(values.totalCopies);
     const nextErrors: FieldErrors = {};
-    const trimmedTitle = title.trim();
-    const trimmedAuthor = author.trim();
-    const trimmedImage = image.trim();
-    const trimmedDescription = description.trim();
-    const copies = Number(totalCopies);
 
-    if (!trimmedTitle) {
-      nextErrors.title = "Book title is required.";
-    }
-
-    if (!trimmedAuthor) {
-      nextErrors.author = "Author is required.";
-    }
-
-    if (!BOOK_CATEGORIES.includes(category)) {
+    if (!trimmed.title) nextErrors.title = "Book title is required.";
+    if (!trimmed.author) nextErrors.author = "Author is required.";
+    if (!BOOK_CATEGORIES.includes(values.category)) {
       nextErrors.category = "Please select a category.";
     }
-
-    if (!trimmedImage) {
+    if (!trimmed.image) {
       nextErrors.image = "Cover image URL is required.";
-    } else if (!getPreviewSrc(trimmedImage)) {
-      nextErrors.image = "Enter a valid image URL starting with http:// or https://.";
+    } else if (!getPreviewSrc(trimmed.image)) {
+      nextErrors.image =
+        "Enter a valid image URL starting with http:// or https://.";
     }
-
-    if (!totalCopies.trim()) {
+    if (!values.totalCopies.trim()) {
       nextErrors.totalCopies = "Total copies is required.";
     } else if (!Number.isInteger(copies) || copies < 1) {
       nextErrors.totalCopies = "Enter a whole number of at least 1.";
     }
-
-    if (!trimmedDescription) {
-      nextErrors.description = "Description is required.";
-    }
+    if (!trimmed.description) nextErrors.description = "Description is required.";
 
     setErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      return;
-    }
+    if (Object.keys(nextErrors).length > 0) return;
 
     setIsSubmitting(true);
 
     try {
       const token = await getTokenFromClient();
-
       if (!token) {
-        toast.error("Your session expired. Please log in again.");
-        router.push(`/login?callbackUrl=${encodeURIComponent("/add-book")}`);
+        redirectToLogin();
         return;
       }
 
@@ -182,44 +195,33 @@ const AddBookForm = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title: trimmedTitle,
-          author: trimmedAuthor,
-          category,
-          image: trimmedImage,
-          description: trimmedDescription,
+          ...trimmed,
+          category: values.category,
           totalCopies: copies,
         }),
       });
 
       if (response.status === 401) {
-        toast.error("Your session expired. Please log in again.");
-        router.push(`/login?callbackUrl=${encodeURIComponent("/add-book")}`);
+        redirectToLogin();
         return;
       }
+
+      const data = (await response.json().catch(() => null)) as {
+        msg?: unknown;
+        _id?: unknown;
+      } | null;
 
       if (!response.ok) {
-        const payload: unknown = await response.json().catch(() => null);
-        const message =
-          typeof payload === "object" &&
-            payload !== null &&
-            typeof (payload as { msg?: unknown }).msg === "string"
-            ? (payload as { msg: string }).msg
-            : "We couldn't add this book. Please try again.";
-
-        toast.error(message);
+        toast.error(
+          typeof data?.msg === "string"
+            ? data.msg
+            : "We couldn't add this book. Please try again."
+        );
         return;
       }
 
-      const data: unknown = await response.json().catch(() => null);
-      const newId =
-        typeof data === "object" &&
-          data !== null &&
-          typeof (data as { _id?: unknown })._id === "string"
-          ? (data as { _id: string })._id
-          : null;
-
       toast.success("Book added to the shelves.");
-      router.push(newId ? `/books/${newId}` : "/books");
+      router.push(typeof data?._id === "string" ? `/books/${data._id}` : "/books");
     } catch {
       toast.error(
         "We couldn't reach the shelves. Please check your connection and try again."
@@ -236,7 +238,7 @@ const AddBookForm = () => {
           {previewSrc ? (
             <Image
               src={previewSrc}
-              alt={`Cover preview of ${title.trim() || "your book"}`}
+              alt={`Cover preview of ${values.title.trim() || "your book"}`}
               fill
               unoptimized
               sizes="(max-width: 1024px) 100vw, 22rem"
@@ -273,24 +275,13 @@ const AddBookForm = () => {
                 type="text"
                 placeholder="The Silent Orchard"
                 className="h-10"
-                value={title}
-                onChange={(event) => {
-                  setTitle(event.target.value);
-                  clearError("title");
-                }}
+                value={values.title}
+                onChange={(e) => updateField("title", e.target.value)}
                 aria-invalid={Boolean(errors.title)}
                 aria-describedby={errors.title ? "title-error" : undefined}
                 disabled={isSubmitting}
               />
-              {errors.title && (
-                <p
-                  id="title-error"
-                  role="alert"
-                  className="text-xs text-destructive"
-                >
-                  {errors.title}
-                </p>
-              )}
+              <FieldMessage id="title" error={errors.title} />
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
@@ -301,34 +292,20 @@ const AddBookForm = () => {
                   type="text"
                   placeholder="Ayesha Rahman"
                   className="h-10"
-                  value={author}
-                  onChange={(event) => {
-                    setAuthor(event.target.value);
-                    clearError("author");
-                  }}
+                  value={values.author}
+                  onChange={(e) => updateField("author", e.target.value)}
                   aria-invalid={Boolean(errors.author)}
                   aria-describedby={errors.author ? "author-error" : undefined}
                   disabled={isSubmitting}
                 />
-                {errors.author && (
-                  <p
-                    id="author-error"
-                    role="alert"
-                    className="text-xs text-destructive"
-                  >
-                    {errors.author}
-                  </p>
-                )}
+                <FieldMessage id="author" error={errors.author} />
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="category">Category</Label>
                 <Select
-                  value={category}
-                  onValueChange={(value) => {
-                    setCategory(value ?? "");
-                    clearError("category");
-                  }}
+                  value={values.category}
+                  onValueChange={(value) => updateField("category", value ?? "")}
                   disabled={isSubmitting}
                 >
                   <SelectTrigger
@@ -349,15 +326,7 @@ const AddBookForm = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.category && (
-                  <p
-                    id="category-error"
-                    role="alert"
-                    className="text-xs text-destructive"
-                  >
-                    {errors.category}
-                  </p>
-                )}
+                <FieldMessage id="category" error={errors.category} />
               </div>
             </div>
 
@@ -368,28 +337,17 @@ const AddBookForm = () => {
                 type="url"
                 placeholder="https://example.com/cover.jpg"
                 className="h-10"
-                value={image}
-                onChange={(event) => {
-                  setImage(event.target.value);
-                  clearError("image");
-                }}
+                value={values.image}
+                onChange={(e) => updateField("image", e.target.value)}
                 aria-invalid={Boolean(errors.image)}
                 aria-describedby={errors.image ? "image-error" : "image-hint"}
                 disabled={isSubmitting}
               />
-              {errors.image ? (
-                <p
-                  id="image-error"
-                  role="alert"
-                  className="text-xs text-destructive"
-                >
-                  {errors.image}
-                </p>
-              ) : (
-                <p id="image-hint" className="text-xs text-muted-foreground">
-                  Use a direct link to the cover image.
-                </p>
-              )}
+              <FieldMessage
+                id="image"
+                error={errors.image}
+                hint="Use a direct link to the cover image."
+              />
             </div>
 
             <div className="space-y-1.5 sm:max-w-48">
@@ -402,33 +360,19 @@ const AddBookForm = () => {
                 step={1}
                 placeholder="1"
                 className="h-10"
-                value={totalCopies}
-                onChange={(event) => {
-                  setTotalCopies(event.target.value);
-                  clearError("totalCopies");
-                }}
+                value={values.totalCopies}
+                onChange={(e) => updateField("totalCopies", e.target.value)}
                 aria-invalid={Boolean(errors.totalCopies)}
                 aria-describedby={
                   errors.totalCopies ? "total-copies-error" : "total-copies-hint"
                 }
                 disabled={isSubmitting}
               />
-              {errors.totalCopies ? (
-                <p
-                  id="total-copies-error"
-                  role="alert"
-                  className="text-xs text-destructive"
-                >
-                  {errors.totalCopies}
-                </p>
-              ) : (
-                <p
-                  id="total-copies-hint"
-                  className="text-xs text-muted-foreground"
-                >
-                  How many copies are on the shelves?
-                </p>
-              )}
+              <FieldMessage
+                id="total-copies"
+                error={errors.totalCopies}
+                hint="How many copies are on the shelves?"
+              />
             </div>
 
             <Separator />
@@ -439,26 +383,15 @@ const AddBookForm = () => {
                 id="description"
                 placeholder="What is this book about?"
                 className="min-h-32"
-                value={description}
-                onChange={(event) => {
-                  setDescription(event.target.value);
-                  clearError("description");
-                }}
+                value={values.description}
+                onChange={(e) => updateField("description", e.target.value)}
                 aria-invalid={Boolean(errors.description)}
                 aria-describedby={
                   errors.description ? "description-error" : undefined
                 }
                 disabled={isSubmitting}
               />
-              {errors.description && (
-                <p
-                  id="description-error"
-                  role="alert"
-                  className="text-xs text-destructive"
-                >
-                  {errors.description}
-                </p>
-              )}
+              <FieldMessage id="description" error={errors.description} />
             </div>
 
             <Button
