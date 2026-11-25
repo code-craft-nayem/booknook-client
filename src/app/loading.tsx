@@ -1,29 +1,37 @@
-import { BookOpen, Loader2 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { BookOpen } from "lucide-react";
 
 export default function Loading() {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center px-4">
-      <div className="flex w-full max-w-sm flex-col items-center text-center">
-        <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm">
-          <BookOpen className="size-7" />
-        </div>
-        <h1 className="font-heading mt-5 text-xl font-semibold tracking-tight">
-          Opening your library
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Gathering the shelves for you.
-        </p>
-        <div className="mt-8 w-full space-y-3">
-          <Skeleton className="mx-auto h-3 w-3/4" />
-          <Skeleton className="mx-auto h-3 w-1/2" />
-        </div>
-        <Loader2
-          className="mt-8 size-6 animate-spin text-primary"
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex min-h-[70vh] flex-1 flex-col items-center justify-center px-4 py-12 text-center"
+    >
+      <div className="relative flex size-24 items-center justify-center sm:size-28">
+        <div
           aria-hidden="true"
+          className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-xl"
         />
-        <span className="sr-only">Loading...</span>
+        <div
+          aria-hidden="true"
+          className="absolute inset-1.5 rounded-full bg-gradient-to-br from-primary/10 via-card to-accent/60 shadow-inner"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 animate-spin rounded-full border-4 border-primary/15 border-t-primary border-r-primary/60"
+        />
+        <BookOpen
+          aria-hidden="true"
+          className="relative size-10 text-primary sm:size-12"
+        />
       </div>
+
+      <p className="font-heading mt-6 text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+        Loading...
+      </p>
+      <p className="mt-1.5 text-sm text-muted-foreground">
+        Gathering the shelves for you.
+      </p>
     </div>
   );
 }
