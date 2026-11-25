@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { A11y, Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -54,16 +53,8 @@ const HeroSlider = () => {
           }}
           loop
           a11y={{ enabled: true }}
-          className="overflow-hidden rounded-3xl ring-1 ring-foreground/10"
-          style={
-            {
-              "--swiper-theme-color": "var(--primary)",
-              "--swiper-navigation-size": "36px",
-              "--swiper-pagination-bottom": "16px",
-              "--swiper-pagination-bullet-inactive-color": "#ffffff",
-              "--swiper-pagination-bullet-inactive-opacity": "0.5",
-            } as CSSProperties
-          }
+          className="hero-slider overflow-hidden rounded-3xl ring-1 ring-foreground/10"
+
         >
           {slides.map((slide) => (
             <SwiperSlide key={slide.title}>

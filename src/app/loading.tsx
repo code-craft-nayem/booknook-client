@@ -22,7 +22,7 @@ export default function Loading() {
           className="mt-8 size-6 animate-spin text-primary"
           aria-hidden="true"
         />
-        <span className="sr-only">Loading</span>
+        <span className="sr-only">Loading...</span>
       </div>
     </div>
   );
